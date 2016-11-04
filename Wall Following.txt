@@ -1,0 +1,47 @@
+#include <Servo.h>
+
+Servo leftwheel;
+Servo rightwheel;
+int RPin = 5;
+int FPin = 6;
+int val = 500;
+int posr = 0;
+int posl = 0;
+//Pin 23=PD_0 Pin 24=PD_1
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(19, INPUT_PULLUP);
+  pinMode(17, INPUT_PULLUP);
+  pinMode(RPin, OUTPUT);
+  pinMode(FPin, OUTPUT);
+  leftwheel.attach(19);
+  leftwheel.write(posl);
+  rightwheel.attach(17);
+  rightwheel.write(posr);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  while ((analogRead(RPin) > val) && (analogRead(FPin) > val))
+  {
+    rightwheel.write(posr -= 1);
+  }
+  //servo turns left (1,1)
+  while ((analogRead(RPin) > val) && (analogRead(FPin) <= val))
+  {
+    leftwheel.write(posl += 1);
+    rightwheel.write(posr -= 1);
+  }
+  //servo moves forward (1,0)
+  while ((analogRead(RPin) <= val) && (analogRead(FPin) > val))
+    //servo moves left (0,1)
+  {
+    rightwheel.write(posr -= 1);
+  }
+  while ((analogRead(RPin) <= val) && (analogRead(FPin) < val))
+  {
+    leftwheel.write(posl += 1);
+  }
+  //servo moves left
+}
